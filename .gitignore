@@ -1,0 +1,13 @@
+node_modules/
+dist/
+*.ipk
+.DS_Store
+*.log
+npm-debug.log*
+.env
+.env.local
+*.swp
+*.swo
+*~
+.vscode/launch.json
+.idea/

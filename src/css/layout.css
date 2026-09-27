@@ -1,0 +1,66 @@
+/* Additional layout styles for TV optimization */
+
+html, body {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
+}
+
+/* Ensure text is readable on TV */
+body {
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+/* High contrast focus indicators for TV */
+*:focus {
+  outline: 3px solid #FF6B35;
+}
+
+.is-focused {
+  outline: 3px solid #FF6B35 !important;
+}
+
+/* Scrollbars for TV */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #FF6B35;
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #ff8555;
+}
+
+/* Minimize text selection issues on TV */
+* {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+input, textarea {
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+/* Ensure images don't cause jank */
+img {
+  display: block;
+}
