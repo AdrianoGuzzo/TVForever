@@ -40,4 +40,4 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 
-Write-Host "✓ Installation complete" -ForegroundColor Green
+Write-Host "[OK] Installation complete" -ForegroundColor Green

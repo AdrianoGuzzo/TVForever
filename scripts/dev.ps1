@@ -31,4 +31,4 @@ if ($Inspect) { $args += "-Inspect" }
 & "$PSScriptRoot/launch.ps1" @args
 if ($LASTEXITCODE -ne 0) { exit 1 }
 
-Write-Host "`n✓ Complete!" -ForegroundColor Green
+Write-Host "`n[OK] Complete!" -ForegroundColor Green

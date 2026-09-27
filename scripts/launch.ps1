@@ -25,7 +25,7 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 
-Write-Host "✓ App launched" -ForegroundColor Green
+Write-Host "[OK] App launched" -ForegroundColor Green
 
 # Open inspector if requested
 if ($Inspect) {

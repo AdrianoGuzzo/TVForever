@@ -12,7 +12,7 @@ foreach ($field in $required) {
         exit 1
     }
 }
-Write-Host "✓ appinfo.json valid" -ForegroundColor Green
+Write-Host "[OK] appinfo.json valid" -ForegroundColor Green
 
 # Run tests
 Write-Host "Running tests..." -ForegroundColor Yellow
@@ -21,7 +21,7 @@ if ($LASTEXITCODE -ne 0) {
     Write-Error "Tests failed"
     exit 1
 }
-Write-Host "✓ Tests passed" -ForegroundColor Green
+Write-Host "[OK] Tests passed" -ForegroundColor Green
 
 # Copy to dist
 Write-Host "Preparing distribution..." -ForegroundColor Yellow
@@ -30,5 +30,5 @@ if (Test-Path "dist") {
 }
 Copy-Item -Path "src" -Destination "dist" -Recurse
 
-Write-Host "✓ Build complete" -ForegroundColor Green
+Write-Host "[OK] Build complete" -ForegroundColor Green
 Write-Host "Output: $(Resolve-Path dist)" -ForegroundColor Cyan

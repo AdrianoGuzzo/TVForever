@@ -38,7 +38,7 @@ if ($LASTEXITCODE -ne 0) {
 $ipk = Get-ChildItem "$OutPath" -Filter "*.ipk" -ErrorAction SilentlyContinue | Sort-Object LastWriteTime -Descending | Select-Object -First 1
 
 if ($ipk) {
-    Write-Host "✓ Package created: $($ipk.FullName)" -ForegroundColor Green
+    Write-Host "[OK] Package created: $($ipk.FullName)" -ForegroundColor Green
 } else {
     Write-Error "No .ipk file found after packaging"
     exit 1
