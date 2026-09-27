@@ -2,6 +2,15 @@
 
 ## ⏱️ 5 Min Setup
 
+### 0. Criar Conta no LG Developer Portal (uma única vez)
+
+**Importante:** Você precisa de uma conta **específica** do LG Developer Portal (não é a conta LG comum do Store).
+
+Acesse: https://webostv.developer.lge.com/develop/getting-started/
+- Clique "Sign Up" ou "Register"
+- Use um email válido e crie uma senha
+- **Anote o email e senha** — vais usar no Developer Mode app da TV
+
 ### 1. Instalar webOS CLI (uma única vez no PC)
 ```bash
 npm install -g @webos-tools/cli
@@ -12,7 +21,8 @@ ares -V
 
 **Na TV:**
 - Abra **LG Content Store** → procure **"Developer Mode"** → instale
-- Abra Developer Mode app → login com conta LG Developer
+- Abra **Developer Mode app**
+- **Login:** Use o email + senha da sua conta no LG Developer Portal (não a conta LG comum!)
 - Clique **"Dev Mode Status"** para ativar → TV reinicia
 - Note o **IP da TV** (visto no app)
 

@@ -49,12 +49,23 @@ Um aplicativo IPTV nativo para **LG Smart TVs com webOS**, desenvolvido em HTML5
 
 ## 🚀 Início Rápido
 
+### 0. Criar Conta no LG Developer Portal (uma única vez)
+
+⚠️ **Importante:** Você precisa de uma conta **específica** no LG Developer Portal, não a conta LG genérica do Store.
+
+1. Acesse: https://webostv.developer.lge.com/develop/getting-started/
+2. Clique em **"Sign Up"** ou **"Register"**
+3. Crie uma conta com email + senha
+4. **Anote** o email e senha — vai usar no Developer Mode app da TV
+
 ### 1. Configurar Developer Mode na TV
 
 1. Abra **LG Content Store** (LG Apps)
 2. Procure por **"Developer Mode"** e instale
-3. Abra o app Developer Mode
-4. Faça login com sua conta LG Developer
+3. Abra o app **Developer Mode**
+4. **Faça login com a conta do LG Developer Portal** (não a conta LG genérica)
+   - Email: (a que você criou no passo 0)
+   - Senha: (a que você criou no passo 0)
 5. Clique em **"Dev Mode Status"** para ativar
 6. A TV vai reiniciar
 7. Note o **IP da TV** (visível no app, ou em Settings > Network > Connection Status)
@@ -273,6 +284,11 @@ O app loga estruturadamente:
 ```
 
 ### Troubleshooting
+
+**"Developer Mode app pede login mas não aceita minha conta LG":**
+- ❌ Você está tentando usar a conta LG genérica (do Store)
+- ✅ Você precisa da conta do **LG Developer Portal** (https://webostv.developer.lge.com)
+- Solução: Crie uma conta nova no Developer Portal, use essas credenciais no app
 
 **TV não aparece em `ares-setup-device --list`:**
 - Verifique que ambos PC e TV estão na mesma rede
