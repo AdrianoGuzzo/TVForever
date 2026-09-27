@@ -31,9 +31,12 @@
       this._container.innerHTML = `
         <div class="player-wrapper">
           <video id="player-video" class="player-video"></video>
-          <div class="player-overlay">
+          <div class="player-overlay" style="display: none;">
             <div class="player-spinner"></div>
-            <div class="player-error" style="display: none;"></div>
+            <div class="player-error" style="display: none;">
+              <p class="error-text"></p>
+              <button class="btn-retry-player">Tentar novamente</button>
+            </div>
           </div>
           <div class="player-controls">
             <button class="control-btn control-back" data-action="back">← Voltar</button>
@@ -94,10 +97,11 @@
       const channel = channelService.getChannelById(channelId);
       if (!channel) return;
 
-      this._showSpinner();
       this._clearLoadTimeout();
       this._clearHideControlsTimeout();
       this._hideControls();
+      this._hideError();
+      this._showSpinner();
 
       const url = channel.url;
       const isHLS = /\.m3u8(\?|$)/i.test(url);
@@ -207,7 +211,10 @@
     },
 
     _setupVideoListeners: function() {
-      this._video.addEventListener('canplay', () => this._hideSpinner());
+      this._video.addEventListener('canplay', () => {
+        this._clearLoadTimeout();
+        this._hideSpinner();
+      });
       this._video.addEventListener('error', (e) => {
         const error = this._video.error;
         let msg = 'Erro desconhecido';
@@ -217,10 +224,6 @@
           else if (error.code === error.MEDIA_ERR_ABORTED) msg = 'Reprodução abortada';
         }
         this._showError(msg);
-      });
-
-      this._video.addEventListener('play', () => {
-        this._video.querySelector('.player-error')?.parentElement?.remove();
       });
     },
 
@@ -273,22 +276,45 @@
     },
 
     _showSpinner: function() {
+      const overlay = this._container.querySelector('.player-overlay');
       const spinner = this._container.querySelector('.player-spinner');
+      const errorEl = this._container.querySelector('.player-error');
+      if (overlay) overlay.style.display = 'flex';
       if (spinner) spinner.style.display = 'block';
+      if (errorEl) errorEl.style.display = 'none';
     },
 
     _hideSpinner: function() {
+      const overlay = this._container.querySelector('.player-overlay');
       const spinner = this._container.querySelector('.player-spinner');
       if (spinner) spinner.style.display = 'none';
+      if (overlay) overlay.style.display = 'none';
+    },
+
+    _hideError: function() {
+      const errorEl = this._container.querySelector('.player-error');
+      const overlay = this._container.querySelector('.player-overlay');
+      if (errorEl) errorEl.style.display = 'none';
+      if (overlay) overlay.style.display = 'none';
     },
 
     _showError: function(msg) {
-      this._hideSpinner();
+      this._clearLoadTimeout();
+      const overlay = this._container.querySelector('.player-overlay');
+      const spinner = this._container.querySelector('.player-spinner');
       const errorEl = this._container.querySelector('.player-error');
-      if (errorEl) {
-        errorEl.textContent = msg;
-        errorEl.style.display = 'block';
+      const errorText = this._container.querySelector('.error-text');
+      const retryBtn = this._container.querySelector('.btn-retry-player');
+
+      if (overlay) overlay.style.display = 'flex';
+      if (spinner) spinner.style.display = 'none';
+      if (errorEl) errorEl.style.display = 'block';
+      if (errorText) errorText.textContent = msg;
+
+      if (retryBtn) {
+        retryBtn.onclick = () => this.playChannel(this._currentChannelId);
       }
+
       this._showControls();
     },
 
