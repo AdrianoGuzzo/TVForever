@@ -1,5 +1,5 @@
 {
-  "name": "adriano-iptv",
+  "name": "tvforever",
   "version": "1.0.0",
   "description": "IPTV app for LG webOS TV",
   "author": "Adriano Guzzo",
@@ -13,7 +13,7 @@
     "package": "powershell -ExecutionPolicy Bypass -File scripts/package.ps1",
     "deploy": "powershell -ExecutionPolicy Bypass -File scripts/install.ps1",
     "launch": "powershell -ExecutionPolicy Bypass -File scripts/launch.ps1",
-    "dev": "powershell -ExecutionPolicy Bypass -File scripts/dev.ps1",
+    "dev": "node scripts/dev-wrapper.js",
     "dev-server": "node scripts/dev-server.js"
   },
   "devDependencies": {}

@@ -1,4 +1,4 @@
-# Adriano IPTV — LG webOS TV App
+# TVForever — LG webOS TV App
 
 Um aplicativo IPTV nativo para **LG Smart TVs com webOS**, desenvolvido em HTML5, CSS3 e JavaScript vanilla, que carrega e reproduz a playlist pública do [iptv-org](https://github.com/iptv-org/iptv).
 
@@ -98,8 +98,8 @@ ares-novacom --device MyTV --getkey
 
 ```bash
 # Ambiente de desenvolvimento
-git clone https://github.com/seu-usuario/adriano-iptv.git
-cd AdrianoIPTV
+git clone https://github.com/seu-usuario/tvforever.git
+cd tvforever
 npm install
 
 # Build + teste
@@ -117,7 +117,7 @@ npm run deploy -- -Device MyTV    # Instala na TV
 npm run launch -- -Device MyTV    # Inicia o app
 ```
 
-A TV deve mostrar a app "Adriano IPTV" no launcher. Abra e navegue com o controle remoto.
+A TV deve mostrar a app "TVForever" no launcher. Abra e navegue com o controle remoto.
 
 ---
 

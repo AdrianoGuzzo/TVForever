@@ -1,16 +1,13 @@
 {
-  "id": "com.adriano.iptv",
+  "id": "com.tvforever",
   "version": "1.0.0",
-  "vendor": "Adriano Guzzo",
+  "vendor": "TVForever",
   "type": "web",
-  "title": "Adriano IPTV",
+  "title": "TVForever",
   "main": "index.html",
   "icon": "icon.png",
   "largeIcon": "largeIcon.png",
   "appDescription": "IPTV player for webOS TV with support for M3U playlists",
   "resolution": "1920x1080",
-  "bgColor": "#000000",
-  "iconColor": "#FF6B35",
-  "splashBackground": "#000000",
-  "splashColor": "#FF6B35"
+  "requiredACG": []
 }
