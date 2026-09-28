@@ -30,9 +30,9 @@
       // Build HTML
       this._container.innerHTML = `
         <div class="player-wrapper">
-          <video id="player-video" class="player-video"></video>
+          <video id="player-video" class="player-video" crossorigin="anonymous"></video>
           <div class="player-overlay" style="display: none;">
-            <div class="player-spinner"></div>
+            <div class="player-spinner" style="display: none;"></div>
             <div class="player-error" style="display: none;">
               <p class="error-text"></p>
               <button class="btn-retry-player">Tentar novamente</button>
@@ -110,6 +110,16 @@
         this._loadWithHLS(url);
       } else {
         this._video.src = url;
+        // Chrome requires muted autoplay for some streams
+        this._video.muted = true;
+        this._video.play().catch(err => {
+          console.warn('[Player] Autoplay failed:', err.message);
+          // Try muted
+          this._video.muted = true;
+          this._video.play().catch(err2 => {
+            console.warn('[Player] Muted autoplay also failed:', err2.message);
+          });
+        });
       }
 
       this._setLoadTimeout();
@@ -156,8 +166,16 @@
     },
 
     _detectHLSSupport: function() {
-      this._hasHLSSupport = this._video.canPlayType('application/vnd.apple.mpegurl') === 'probably' ||
-                             this._video.canPlayType('application/vnd.apple.mpegurl') === 'maybe';
+      const hlsSupport = this._video.canPlayType('application/vnd.apple.mpegurl');
+      this._hasHLSSupport = hlsSupport === 'probably' || hlsSupport === 'maybe';
+
+      // Test with alternate mime types
+      if (!this._hasHLSSupport) {
+        const alt1 = this._video.canPlayType('application/x-mpegURL');
+        const alt2 = this._video.canPlayType('audio/mpegurl');
+        this._hasHLSSupport = alt1 === 'probably' || alt1 === 'maybe' || alt2 === 'probably' || alt2 === 'maybe';
+      }
+
       console.log('[Player] HLS native support:', this._hasHLSSupport ? 'yes' : 'no');
     },
 
@@ -211,6 +229,12 @@
     },
 
     _setupVideoListeners: function() {
+      this._video.addEventListener('playing', () => {
+        this._clearLoadTimeout();
+        this._hideSpinner();
+        // Unmute when actually playing
+        this._video.muted = false;
+      });
       this._video.addEventListener('canplay', () => {
         this._clearLoadTimeout();
         this._hideSpinner();
@@ -279,22 +303,31 @@
       const overlay = this._container.querySelector('.player-overlay');
       const spinner = this._container.querySelector('.player-spinner');
       const errorEl = this._container.querySelector('.player-error');
-      if (overlay) overlay.style.display = 'flex';
-      if (spinner) spinner.style.display = 'block';
+      if (overlay) {
+        overlay.style.display = 'flex';
+        overlay.style.alignItems = 'center';
+        overlay.style.justifyContent = 'center';
+      }
+      if (spinner) spinner.style.display = 'flex';
       if (errorEl) errorEl.style.display = 'none';
+      console.log('[Player] Showing spinner');
     },
 
     _hideSpinner: function() {
-      const overlay = this._container.querySelector('.player-overlay');
       const spinner = this._container.querySelector('.player-spinner');
+      const errorEl = this._container.querySelector('.player-error');
       if (spinner) spinner.style.display = 'none';
-      if (overlay) overlay.style.display = 'none';
+      // Only hide overlay if no error is showing
+      if (!errorEl || errorEl.style.display === 'none') {
+        const overlay = this._container.querySelector('.player-overlay');
+        if (overlay) overlay.style.display = 'none';
+      }
     },
 
     _hideError: function() {
       const errorEl = this._container.querySelector('.player-error');
-      const overlay = this._container.querySelector('.player-overlay');
       if (errorEl) errorEl.style.display = 'none';
+      const overlay = this._container.querySelector('.player-overlay');
       if (overlay) overlay.style.display = 'none';
     },
 

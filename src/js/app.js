@@ -160,18 +160,24 @@
       const list = appEl.querySelector('.category-list');
       const categories = channelService.getCategories();
 
-      list.innerHTML = categories.map((cat, idx) => `
-        <li class="category-item" data-id="${cat.id}" data-idx="${idx}">
-          <span class="category-name">${cat.name}</span>
-          <span class="category-count">${cat.count}</span>
-        </li>
-      `).join('');
+      list.innerHTML = categories.map((cat, idx) => {
+        const isActive = cat.id === this._currentCategoryId ? ' active' : '';
+        return `
+          <li class="category-item${isActive}" data-id="${cat.id}" data-idx="${idx}">
+            <span class="category-name">${cat.name}</span>
+            <span class="category-count">${cat.count}</span>
+          </li>
+        `;
+      }).join('');
 
       list.querySelectorAll('.category-item').forEach(el => {
         el.addEventListener('click', () => {
           this._currentCategoryId = el.getAttribute('data-id');
           this._searchQuery = '';
           appEl.querySelector('.search-input').value = '';
+          // Update active state
+          list.querySelectorAll('.category-item').forEach(item => item.classList.remove('active'));
+          el.classList.add('active');
           this._renderChannels(appEl);
         });
       });
@@ -226,6 +232,9 @@
           }
         });
       });
+
+      // Update navigation after rendering new channels
+      this._setupHomeNavigation(appEl);
     },
 
     _setupHomeNavigation: function(appEl) {
