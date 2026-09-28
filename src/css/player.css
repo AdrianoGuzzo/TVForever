@@ -21,6 +21,9 @@
   height: 100%;
   background: black;
   object-fit: contain;
+  display: block;
+  image-rendering: auto;
+  -webkit-appearance: media-controls;
 }
 
 .player-overlay {
