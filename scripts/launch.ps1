@@ -1,11 +1,13 @@
 $ErrorActionPreference = 'Stop'
 
-param(
-    [Parameter(Mandatory=$true)]
-    [string]$Device,
+# Get device from environment
+$Device = $env:DEV_DEVICE
+if (-not $Device) {
+    Write-Error "Error: Device parameter is required (set DEV_DEVICE environment variable)"
+    exit 1
+}
 
-    [switch]$Inspect
-)
+$Inspect = $env:DEV_INSPECT -eq '1'
 
 Write-Host "Launching Adriano IPTV on device: $Device" -ForegroundColor Cyan
 

@@ -30,7 +30,7 @@
       // Build HTML
       this._container.innerHTML = `
         <div class="player-wrapper">
-          <video id="player-video" class="player-video"></video>
+          <video id="player-video" class="player-video" playsinline preload="auto" crossorigin="anonymous"></video>
           <div class="player-overlay" style="display: none;">
             <div class="player-spinner"></div>
             <div class="player-error" style="display: none;">
@@ -106,10 +106,27 @@
       const url = channel.url;
       const isHLS = /\.m3u8(\?|$)/i.test(url);
 
+      // Pause and reset video
+      this._video.pause();
+      this._video.currentTime = 0;
+
       if (isHLS && !this._hasHLSSupport) {
+        // Use hls.js for HLS when no native support
         this._loadWithHLS(url);
-      } else {
+      } else if (isHLS && this._hasHLSSupport) {
+        // Use native HLS support
         this._video.src = url;
+        this._video.play().catch(err => {
+          console.warn('[Player] Autoplay failed:', err);
+          this._video.play();
+        });
+      } else {
+        // Direct stream (MP4, etc)
+        this._video.src = url;
+        this._video.play().catch(err => {
+          console.warn('[Player] Autoplay failed:', err);
+          this._video.play();
+        });
       }
 
       this._setLoadTimeout();
@@ -186,11 +203,32 @@
       const Hls = window.Hls;
       if (!Hls) return;
 
-      this._hls = new Hls();
+      // Configure hls.js for better compatibility
+      const hlsConfig = {
+        debug: false,
+        enableWorker: true,
+        lowLatencyMode: false,
+        backBufferLength: 60,
+        maxBufferLength: 60,
+        maxMaxBufferLength: 120,
+        startLevel: undefined,
+        autoStartLoad: true
+      };
+
+      this._hls = new Hls(hlsConfig);
       this._hls.loadSource(url);
       this._hls.attachMedia(this._video);
 
+      // Log manifest details for debugging
+      this._hls.on(Hls.Events.MANIFEST_PARSED, () => {
+        console.log('[Player] HLS manifest parsed, starting playback');
+        this._video.play().catch(err => {
+          console.warn('[Player] Autoplay failed after manifest:', err);
+        });
+      });
+
       this._hls.on(Hls.Events.ERROR, (event, data) => {
+        console.warn('[Player] HLS error:', data.type, data.details, data.fatal);
         if (data.fatal) {
           switch (data.type) {
             case Hls.ErrorTypes.NETWORK_ERROR:
@@ -205,9 +243,14 @@
         }
       });
 
-      this._video.play().catch(err => {
-        console.warn('[Player] Play failed:', err);
-      });
+      // Fallback autoplay if manifest parse doesn't happen
+      setTimeout(() => {
+        if (this._video.paused && this._video.readyState >= 2) {
+          this._video.play().catch(err => {
+            console.warn('[Player] Delayed autoplay failed:', err);
+          });
+        }
+      }, 2000);
     },
 
     _setupVideoListeners: function() {

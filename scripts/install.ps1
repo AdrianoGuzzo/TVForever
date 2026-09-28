@@ -1,11 +1,11 @@
 $ErrorActionPreference = 'Stop'
 
-param(
-    [Parameter(Mandatory=$true)]
-    [string]$Device,
-
-    [string]$IpkPath = ""
-)
+# Get device from environment
+$Device = $env:DEV_DEVICE
+if (-not $Device) {
+    Write-Error "Error: Device parameter is required (set DEV_DEVICE environment variable)"
+    exit 1
+}
 
 Write-Host "Installing Adriano IPTV to device: $Device" -ForegroundColor Cyan
 
@@ -16,11 +16,12 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 
-# Find .ipk if not specified
+# Find .ipk if not specified in environment
+$IpkPath = $env:IPK_PATH
 if (-not $IpkPath) {
     $ipk = Get-ChildItem "." -Filter "*.ipk" -Recurse | Sort-Object LastWriteTime -Descending | Select-Object -First 1
     if (-not $ipk) {
-        Write-Error "No .ipk file found. Run build first: npm run package"
+        Write-Error "No .ipk file found. Run build first: npm run build"
         exit 1
     }
     $IpkPath = $ipk.FullName
