@@ -11,6 +11,16 @@
     _byId: {}, // Map: id -> channel
     _categories: {}, // Map: categoryId -> count
     _byCategory: {}, // Map: categoryId -> channel[]
+    _brazilCategoryName: '🇧🇷 Brasil',
+
+    /**
+     * Check if a channel is from Brazil
+     * @private
+     */
+    _isBrazilianChannel: function(channel) {
+      const groupTitle = (channel.groupTitle || '').toLowerCase();
+      return groupTitle.includes('brasil') || groupTitle.includes('brazil');
+    },
 
     /**
      * Set all channels and rebuild indices
@@ -22,9 +32,15 @@
       this._categories = {};
       this._byCategory = {};
 
-      // Build indices
+      // Build indices and reorganize Brazilian channels
       this._channels.forEach(channel => {
         this._byId[channel.id] = channel;
+
+        // Check if this is a Brazilian channel and reorganize it
+        if (this._isBrazilianChannel(channel)) {
+          channel.originalGroupTitle = channel.groupTitle;
+          channel.groupTitle = this._brazilCategoryName;
+        }
 
         const cat = channel.groupTitle || 'Sem categoria';
         if (!this._byCategory[cat]) {
@@ -46,8 +62,16 @@
         count: this._channels.length
       }];
 
+      // Separate Brazil category from others
+      const brazilCat = {
+        id: this._brazilCategoryName,
+        name: this._brazilCategoryName,
+        count: this._categories[this._brazilCategoryName] || 0
+      };
+
       // Add other categories sorted by count desc, then alphabetically
       const cats = Object.keys(this._categories)
+        .filter(name => name !== this._brazilCategoryName)
         .sort((a, b) => {
           const diff = this._categories[b] - this._categories[a];
           return diff !== 0 ? diff : a.localeCompare(b);
@@ -58,6 +82,10 @@
           count: this._categories[name]
         }));
 
+      // Add Brazil category first if it has channels
+      if (brazilCat.count > 0) {
+        return all.concat([brazilCat]).concat(cats);
+      }
       return all.concat(cats);
     },
 
