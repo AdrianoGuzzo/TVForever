@@ -11,7 +11,17 @@ const fs = require('fs');
 const path = require('path');
 const url = require('url');
 
-const PORT = 8080;
+// Allow PORT override from environment or find first numeric argument
+let PORT = parseInt(process.env.PORT || '8080');
+if (isNaN(PORT)) {
+  for (let i = 2; i < process.argv.length; i++) {
+    const num = parseInt(process.argv[i]);
+    if (!isNaN(num) && num > 0 && num < 65536) {
+      PORT = num;
+      break;
+    }
+  }
+}
 const SRC_DIR = path.resolve(__dirname, '../src');
 
 const MIME_TYPES = {
@@ -101,8 +111,16 @@ server.listen(PORT, () => {
 server.on('error', (err) => {
   if (err.code === 'EADDRINUSE') {
     console.error(`✗ Port ${PORT} already in use`);
+    if (PORT < 8090) {
+      PORT++;
+      console.log(`🔄 Trying port ${PORT}...`);
+      server.listen(PORT);
+    } else {
+      console.error('✗ No available ports in range 8080-8090');
+      process.exit(1);
+    }
   } else {
     console.error('✗ Server error:', err);
+    process.exit(1);
   }
-  process.exit(1);
 });
